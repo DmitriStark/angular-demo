@@ -10,12 +10,12 @@ import { HousingService } from "../housing.service";
   template: `
     <section>
       <form>
-        <input type="text" placeholder="search by city" />
-        <button class="primary" type="button">Search</button>
+        <input type="text" placeholder="search by city" #filter/>
+        <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
       </form>
     </section>
     <section class="results">
-    <app-housing-location *ngFor="let housingLocation of housingLocationList" [housingLocation] = "housingLocation"/>
+    <app-housing-location *ngFor="let housingLocation of filtredLocationList" [housingLocation] = "housingLocation"/>
     </section>
   `,
   styleUrls: ["./home.component.css"],
@@ -125,8 +125,19 @@ export class HomeComponent {
   // ]
   housingLocationList : HouseingLocation[] = []
   housingService:HousingService = inject(HousingService);
-
+  filtredLocationList:HouseingLocation[] = [];
   constructor(){
-    this.housingLocationList = this.housingService.getAllHousingLocations();
+    // this.housingLocationList = this.housingService.getAllHousingLocations();
+    this.housingService.getAllHousingLocations().then((housingLocationList:HouseingLocation[])=>{
+      this.housingLocationList = housingLocationList;
+      this.filtredLocationList = housingLocationList;
+    })
+  }
+  filterResults(text:string){
+    if(!text) this.filtredLocationList = this.housingLocationList
+
+    this.filtredLocationList = this.housingLocationList.filter(
+      housingLocation => housingLocation?.city.toLocaleLowerCase().includes(text.toLocaleLowerCase())
+    )
   }
 }

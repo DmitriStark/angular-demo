@@ -58,7 +58,10 @@ apllyForm = new FormGroup({
 
   constructor(){
    const housingLocationId = Number(this.route.snapshot.params['id'])
-   this.housingLocation = this.housingService.getHouseLocationById(housingLocationId)
+  //  this.housingLocation = this.housingService.getHouseLocationById(housingLocationId)
+  this.housingService.getHouseLocationById(housingLocationId).then(housingLocation =>{
+    this.housingLocation = housingLocation
+  })
   }
 submitApplication(){
   this.housingService.submitApplication(
